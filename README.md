@@ -19,10 +19,10 @@ Probability: Decimal number between 0 and 1 with 2 decimal places.
 
 
 ###  Program Operation Summary
-1. Read Job Information
+1. Read Job Information \
     Read job details including name, run time, and probability of blocking from the input file.
    
-2. Simulate Job Execution
+2. Simulate Job Execution \
   Based on the chosen scheduling policy (FCFS or RR), simulate the execution of processes.
   Determine if a process blocks for I/O based on remaining time and probability.
   For FCFS CPU scheduling, a non-blocking process runs until completion; if blocking, determine the run time before blocking.
