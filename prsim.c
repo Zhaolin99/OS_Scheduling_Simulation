@@ -4,10 +4,7 @@
 #include <string.h>
 #include <errno.h>
 
-// you do not generate how long you stay on the i/o until you really move to i/o queue
-//overall tick (the one get from job) to set if it is running or not
 
-//Struct
 struct job{
     char name[11];
     int runtime; //Its total CPU time (as read);
@@ -85,7 +82,7 @@ job* init_job_struct(char* name, int runtime, float prob){
 //linked list
 typedef struct  list_node{
     job* current_job; // current_job->name
-    struct list_node *next; //
+    struct list_node *next;
 } LinkedList;
 
 // create a node
@@ -140,8 +137,6 @@ void append(LinkedList*** head, LinkedList** node)
     (**head) = tmp; //restore the head
 
 }
-//delete job node from the head
-// I interpret it as completely delete the node (free)
 
 void delete_head(LinkedList*** head)
 {
@@ -220,7 +215,6 @@ void display_result(job** jobs, cpu my_cpu, IO my_io, int *wallclock, int jobs_c
         if((jobs)[i]->end_walltime>(jobs)[j]->end_walltime){
          min=j;
         }
-        //swap(&jobs[min],&jobs[i]);
       }
       swap(&jobs[min],&jobs[i]);
     }
@@ -361,14 +355,6 @@ void fcfs_simulation_test_for_allblock2(LinkedList** CPU_queue, LinkedList** IO_
                 (*CPU_queue)->current_job->time_run++;
                 (*CPU_queue)->current_job->time_remain--;
                 my_cpu.time_busy++;
-                /*
-                if ((*CPU_queue)->current_job->time_remain == 0) {
-                  (*CPU_queue)->current_job->end_walltime = (*walltime);
-                  //printf("***** %s ends on %d",(*CPU_queue)->current_job->name,(*walltime));
-                  (*CPU_queue)->current_job->initial_inCPU = true;
-                  delete_head(&CPU_queue);
-                  my_cpu.busy=false;// delete the head
-                }*/
             }
         }
         else // CPU_queue is idle
@@ -383,7 +369,6 @@ void fcfs_simulation_test_for_allblock2(LinkedList** CPU_queue, LinkedList** IO_
         if (((*IO_queue) != NULL) &&(!(*IO_queue)->current_job->just_run) )
         {
             my_io.busy = true;
-            //my_io.time_busy++;
             my_io.total_time++;
             (*io_time)++;
             LinkedList* tmp = (*IO_queue)->next;
@@ -437,13 +422,6 @@ void fcfs_simulation_test_for_allblock2(LinkedList** CPU_queue, LinkedList** IO_
         if ((*IO_queue) == NULL) {
             my_io.busy = false;
         }
-
-        //printf("\nAt walltime %d:\n", (*walltime));
-        //printf("CPU QUEUE:\n");
-        //display_queue(CPU_queue);
-        //printf("IO QUEUE:\n");
-        //display_queue(IO_queue);
-
     }
     display_result(jobs,my_cpu,my_io,walltime,jobs_count);
 }
@@ -571,8 +549,6 @@ void rr_simulation(LinkedList** CPU_queue, LinkedList** IO_queue, int* tick, int
             //set up HOW LONG current job will wait in IO queue
             my_io.num_io_starts++;
             (*IO_queue)->current_job->io_block++;
-            //printf ("%s is at IO, the block time is %d\n",(*IO_queue)->current_job->name,stay_on_IO);
-            //stay_on_IO = 1;
             if((*IO_queue)->current_job->time_remain==0) {
               stay_on_IO=1;
             }else{
@@ -610,7 +586,6 @@ void rr_simulation(LinkedList** CPU_queue, LinkedList** IO_queue, int* tick, int
     if ((*IO_queue) == NULL) {
       my_io.busy = false;
     }
-
       //printf("\nAt walltime %d:\n", (*walltime));
       //printf("CPU QUEUE:\n");
       //display_queue(CPU_queue);
@@ -699,40 +674,10 @@ int main(int argc, char* argv[]) {
         rr_simulation(&CPU_queue, &IO_queue, &tick, &walltime, &io_count, jobs, jobs_count);
     }
 
-    // free everything // though do not need to
-//    Delete_Queue(&CPU_queue);
-//    Delete_Queue(&IO_queue);
-    //test for linked list
-    /*
-  LinkedList* CPU_queue=creat_CPU_queue(3,jobs);
-  job job_a,job_b;
-  job_a = (job) {.name="selftest1", .runtime=4, .prob_blocking=0.87, .time_run=0, .time_remain=0};
-  job_b = (job) {.name="selftest2", .runtime=4, .prob_blocking=0.87, .time_run=0, .time_remain=0};
-  LinkedList* node1 = create_node(&job_a);
-  LinkedList* node2 = create_node(&job_b);
+    // free everything
+    Delete_Queue(&CPU_queue);
+    Delete_Queue(&IO_queue);
 
-  append(&CPU_queue,&node1);
-  append(&CPU_queue,&node2);
-  delete_head(&CPU_queue);
-  Delete_Queue(&CPU_queue);
-*/
-    /*
-  LinkedList* empty_queue=creat_EMPTY_queue();
-  job job_a,job_b;
-  job_a = (job) {.name="selftest1", .runtime=4, .prob_blocking=0.87, .time_run=0, .time_remain=0};
-  job_b = (job) {.name="selftest2", .runtime=4, .prob_blocking=0.87, .time_run=0, .time_remain=0};
-  LinkedList* node1 = create_node(&job_a);
-  LinkedList* node2 = create_node(&job_b);
-  //append(&empty_queue,&node1);
-  //append(&empty_queue,&node2); 连续append 有问题
-  //delete_head(&empty_queue);
-  //Delete_Queue(&empty_queue);
-*/
-
-    // for(int i = 0; i <10; i++){
-    //int x = (int) random() % (i+1) + 1;
-    //printf("i+1:%d   x: %d \n", i+1, x);
-    //}
 
 
     //display_queue(&CPU_queue);
